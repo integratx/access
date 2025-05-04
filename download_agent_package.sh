@@ -2,14 +2,15 @@
 
 # Run this script with the provided token and routing number to download the integratx agent package
 
-if [ $# -ne 2 ]; then
-    echo "Usage: $0 <token> <routing #>" >&2
+if [ $# -ne 3 ]; then
+    echo "Usage: $0 <token> <routing #> <host>" >&2
     exit 1
 fi
 
 # classic or fine-grained PAT with “read” on contents
 export GH_TOKEN="$1"
 export ROUTING_NUMBER="$2"
+export AGENT_HOST="$3"
 
 OWNER="integratx"                # repo owner
 REPO="agent"
@@ -55,6 +56,7 @@ if sha256sum -c checksum; then
 	echo "https://itxagent:$GH_TOKEN@github.com" >> $CRED
 	chmod 600 $CRED
 	echo "$ROUTING_NUMBER" > "$PACKAGE/routing.number"
+	echo "$AGENT_HOST" > "$PACKAGE/$ROUTING_NUMBER.host"
 else
     echo "Checksum verification failed."
     exit 1
