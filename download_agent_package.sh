@@ -56,7 +56,7 @@ if sha256sum -c checksum; then
 	echo "https://itxagent:$GH_TOKEN@github.com" >> $CRED
 	chmod 600 $CRED
 	echo "$ROUTING_NUMBER" > "$PACKAGE/routing.number"
-	echo "$AGENT_HOST" > "$PACKAGE/$ROUTING_NUMBER.host"
+	echo "$AGENT_HOST" > "$PACKAGE/agent.host"
 else
     echo "Checksum verification failed."
     exit 1
