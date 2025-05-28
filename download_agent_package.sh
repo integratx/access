@@ -55,6 +55,7 @@ if sha256sum -c checksum; then
     tar -xzf $NAME
 	echo "https://itxagent:$GH_TOKEN@github.com" >> $CRED
 	chmod 600 $CRED
+	cp $PACKAGE/gitconfig $HOME/.gitconfig
 	echo "$ROUTING_NUMBER" > "$PACKAGE/routing.number"
 	echo "$AGENT_HOST" > "$PACKAGE/agent.host"
 else
