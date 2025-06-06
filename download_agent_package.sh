@@ -18,7 +18,6 @@ TAG="v1.0.beta"
 PACKAGE="itx-agent-package"
 NAME="$PACKAGE.tar.gz"
 CHECK="checksum"
-CRED="$HOME/.git-credentials"
 
 # 1 – look up the tar file id from the tagged release
 asset_id=$(curl -s \
@@ -50,15 +49,18 @@ curl -L \
 -o "$CHECK" \
 "https://api.github.com/repos/$OWNER/$REPO/releases/assets/$checksum_id"
 
-# 5 - verify the checksum - extract and store credentials if ok
+# 5 - verify the checksum
 if sha256sum -c checksum; then
-    tar -xzf $NAME
-	echo "https://itxagent:$GH_TOKEN@github.com" >> $CRED
-	chmod 600 $CRED
-	cp $PACKAGE/gitconfig $HOME/.gitconfig
-	echo "$ROUTING_NUMBER" > "$PACKAGE/routing.number"
-	echo "$AGENT_HOST" > "$PACKAGE/agent.host"
+    echo "Checksum verification passed."
 else
     echo "Checksum verification failed."
     exit 1
 fi
+
+# Extract agent package from tar file
+tar -xzf $NAME
+
+# Initialize agent
+$PACKAGE/init_agent.sh "$GH_TOKEN" "$ROUTING_NUMBER" "$AGENT_HOST"
+
+exit 0
